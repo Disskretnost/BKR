@@ -1,5 +1,5 @@
 const {Sequelize} = require('sequelize');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });  // Указываем путь к файлу .env на один уровень выше
 
 module.exports = new Sequelize(
     process.env.DB_NAME,

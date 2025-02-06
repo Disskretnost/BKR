@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   # Контейнер с Node.js
   server:
@@ -8,10 +10,12 @@ services:
     working_dir: /opt/server
     volumes:
       - ./server:/opt/server
+      - ./static:/opt/static
     env_file:
       - .env
     expose:
       - '3000'
+      - '4200'
     depends_on:
       - db
 
@@ -39,6 +43,7 @@ services:
       - '80:80'
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - ./static:/var/www/static
     restart: always
 
   # Контейнер с pgadmin

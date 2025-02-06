@@ -1,5 +1,5 @@
 const User = require('./../models/User');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { Op } = require('sequelize');
 const TokenService = require('./token-service');
 const UserDTO = require('./../dtos/user-dto');
@@ -61,22 +61,24 @@ class UserService {
         return token;
     }
 
-    async refreshToken(refreshToken){
-        if (!refreshToken){
+    async refreshToken(refreshToken) {
+        if (!refreshToken) {
             throw ApiError.UnauthorizedError();
         }
-
+    
         const userData = tokenService.validateRefreshToken(refreshToken);
         const tokenFromDB = await tokenService.findToken(refreshToken);
-        if (!userData || !tokenFromDB){
+        if (!userData || !tokenFromDB) {
             throw ApiError.UnauthorizedError();
         }
-        const user = await User.findOne({ where: { id: userData.id } })
-        const userDto = new UserDTO(user);
-        const tokens = TokenService.generateToken({ id: newUserDto.id });
+    
+        const user = await User.findOne({ where: { id: userData.id } });
+        const userDto = new UserDTO(user);  // Здесь создаем userDto, а не newUserDto
+        const tokens = TokenService.generateToken({ id: userDto.id });
         await TokenService.saveToken(userDto.id, tokens.refreshToken);
         return { ...tokens, user: userDto };
     }
+    
     
     async getAllUsers(){
         const users = User.findAll();

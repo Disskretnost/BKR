@@ -5,4 +5,6 @@ ENV NODE_PATH /opt/server/node_modules
 
 WORKDIR /opt/server/
 
-CMD [ "npm run dev" ]
+COPY /*.json ./
+RUN npm i
+

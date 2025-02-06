@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const Token = require('../models/Token');
 const { where } = require('sequelize');
-require('dotenv').config({ path: '../.env' }); 
+require('dotenv').config({ path: '../.env' });  // Указываем путь к файлу .env на один уровень выше
 
 class TokenService {
     generateToken(payload) {
