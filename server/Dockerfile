@@ -8,3 +8,4 @@ WORKDIR /opt/server/
 COPY /*.json ./
 RUN npm i
 
+CMD ["node", "index.js"]
