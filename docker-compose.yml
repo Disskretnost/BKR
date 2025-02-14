@@ -49,6 +49,7 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./static:/var/www/static
+      - ./client/build:/opt/react/build
     restart: always
     networks:
       - app_network  # Подключаем к сети
@@ -65,6 +66,22 @@ services:
     expose:
       - '80'
     restart: always
+    networks:
+      - app_network  # Подключаем к сети
+    
+  react:
+    build:
+      context: ./client  # Путь к вашему React проекту теперь /client
+    tty: true
+    working_dir: /opt/react
+    volumes:
+      - ./client:/opt/react  # Монтируем папку client в контейнер
+    env_file:
+      - .env
+    expose:
+      - '3000'  # Порт для React (3000 — это стандартный порт для React)
+    depends_on:
+      - server  # Если React зависит от сервера
     networks:
       - app_network  # Подключаем к сети
 
