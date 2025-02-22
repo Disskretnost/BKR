@@ -1,41 +1,48 @@
-import React from 'react';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { logout } from '../slices/authSlice'; // Импортируем метод logout
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import socket from './../socket/index';
+import ACTIONS from './../socket/actions';
+import { useNavigate } from 'react-router-dom';  // Импортируем useNavigate
+import { v4 } from 'uuid';
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate();  // Заменили history на navigate
+  const [rooms, updateRooms] = useState([]);
+  const rootNode = useRef();
 
-  const handleLogout = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    if (refreshToken) {
-      try {
-        // Отправляем запрос на сервер для выхода
-        const response = await axios.post('http://localhost:4200/api/logout', { refreshToken });
-
-        if (response.status === 200) {
-          // Вызываем метод logout для обновления состояния в Redux
-          dispatch(logout());
-
-          // Перенаправляем на страницу авторизации
-          navigate('/login');
-        } else {
-          console.error('Ошибка при выходе');
-        }
-      } catch (error) {
-        console.error('Ошибка при запросе logout:', error);
+  useEffect(() => {
+    const handleRoomsUpdate = ({ rooms = [] }) => {
+      if (rootNode.current) {
+        updateRooms(rooms);
       }
-    }
-  };
+    };
+
+    socket.on(ACTIONS.SHARE_ROOMS, handleRoomsUpdate);
+
+    // Очистка слушателя при размонтировании компонента
+    return () => socket.off(ACTIONS.SHARE_ROOMS, handleRoomsUpdate);
+  }, []);
+
+  const handleJoinRoom = (roomID) => navigate(`/room/${roomID}`);
+  const handleCreateRoom = () => navigate(`/room/${v4()}`);
 
   return (
-    <div>
-      <h1>Главная</h1>
-      {/* Кнопка выхода */}
-      <button onClick={handleLogout}>Выход</button>
+    <div ref={rootNode}>
+      <h1>Available Rooms</h1>
+
+      <ul>
+        {rooms.map(roomID => (
+          <li key={roomID}>
+            {roomID}
+            <button onClick={() => handleJoinRoom(roomID)}>
+              JOIN ROOM
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <button onClick={handleCreateRoom}>
+        Create New Room
+      </button>
     </div>
   );
 };

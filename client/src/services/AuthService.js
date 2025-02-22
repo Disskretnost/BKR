@@ -17,7 +17,7 @@ export default class AuthService {
   }
 
   // Регистрация
-  static async registration(phone, email, username, password ) {
+  static async registration(phone, email, username, password) {
     try {
       const response = await $api.post('/registration', { phone, email, username, password });
       console.log(response.data);

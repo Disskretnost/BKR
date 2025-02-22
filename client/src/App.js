@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import AuthService from './services/AuthService';
+import Room from './/pages/Room/room';
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -35,7 +37,10 @@ const App = () => {
       <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/home" />} />
       <Route path="/registration" element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/home" />} />
       <Route path="/home" element={isAuthenticated ? <HomePage /> : <Navigate to="/login" />} />
+      <Route path="/room/:id" element={<Room />} />
     </Routes>
+      
+
   );
 };
 
