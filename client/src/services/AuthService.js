@@ -50,7 +50,7 @@ export default class AuthService {
   // Получение токенов
   static async refreshToken(refreshToken) {
     try {
-      const response = await $api.post('/api/refresh', { refreshToken });
+      const response = await $api.post('/refresh', { refreshToken });
 
       if (response.status === 200 && response.data) {
         return response.data; // Возвращаем обновленные токены
