@@ -35,7 +35,21 @@ services:
     networks:
       - app_network  # Подключаем к сети
 
-
+  nginx:
+    container_name: proxy_nginx
+    depends_on:
+      - server
+      - db
+      - pgadmin
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./client/build:/var/www/static
+    restart: always
+    networks:
+      - app_network  # Подключаем к сети
 
   # Контейнер с pgadmin
   pgadmin:
